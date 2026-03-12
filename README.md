@@ -25,3 +25,11 @@
 - [ ] Добавление задач  
 - [ ] Удаление задач  
 - [ ] Поиск задач
+
+
+
+
+## Learning Notes
+
+My personal React notes:  
+[Open notes](./notes.md)
