@@ -352,3 +352,90 @@ Events --- это действия пользователя, на которые
     }
 ---
 Примечание:  каждый useEffect Запускается минимум 1 раз даже если второй аргумент не менялся.Также порядок useEffect очень важен.
+
+
+# useRef
+
+**useRef** — это хранилище значений которое не вызывает перерисовку компонента.
+
+---
+
+## Где используют
+
+- Работа с DOM (самое популярное)  
+- Хранение значения между рендерами
+- фокус на input
+- Сколл 
+- Таймеры  
+- Debounce
+- Работа с видео / аудио
+- Интеграция с библиотеками
+
+
+### Фокус input
+``` jsx
+const inputRef = useRef(null)
+
+useEffect(() => {
+  inputRef.current.focus()
+}, [])
+
+```
+
+### Scroll
+``` jsx
+const itemRef = useRef(null)
+
+itemRef.current.scrollIntoView()
+```
+
+### Хранение предыдущего значения
+``` jsx
+
+const prevValue = useRef()
+
+useEffect(() => {
+  prevValue.current = value
+}, [value])
+
+```
+### Таймеры
+``` jsx
+const timerRef = useRef(null)
+
+useEffect(() => {
+  timerRef.current = setInterval(() => {
+    console.log('tick')
+  }, 1000)
+
+  return () => clearInterval(timerRef.current)
+}, [])
+```
+
+### Debounce
+``` jsx
+const timeoutRef = useRef(null)
+
+const handleChange = (e) => {
+  clearTimeout(timeoutRef.current)
+
+  timeoutRef.current = setTimeout(() => {
+    console.log(e.target.value)
+  }, 500)
+}
+```
+### Интеграция с библиотеками
+``` jsx
+const chartRef = useRef(null)
+
+useEffect(() => {
+  const chart = new Chart(chartRef.current)
+}, [])
+```
+
+### Простымим словами когда его выбирать
+ * нужно "запомнить", но не обновлять UI
+ * нужнен доступ к DOM
+ * работа с таймерами или API
+
+ ---
