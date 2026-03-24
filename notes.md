@@ -440,7 +440,7 @@ useEffect(() => {
 
  ---
  # memo (мемоизация)
- memo - Запоминает компонент и не перерисовывает его, если props не изменились
+ **`memo`** - Запоминает компонент и не перерисовывает его, если props не изменились
  Пример:
  ``` jsx
  const Child = React.memo(({ value }) => {
@@ -466,7 +466,7 @@ export default React.memo(Counter)
 
 # useCallback
 
-useCallback - кеширует функцию 
+**`useCallback`** - кеширует функцию 
 
 Было:
 ``` jsx
@@ -486,7 +486,7 @@ const handleClick = useCallback(() => {
 ### Обычно используют в комбинации с memo 
 ---
 # useMemo
-  `useMemo` - это способ запомнить результат вычисления, чтобы не считать заново каждый раз.
+  **`useMemo`** - это способ запомнить результат вычисления, чтобы не считать заново каждый раз.
 
   Пример:
 ``` jsx
@@ -512,3 +512,45 @@ const result = useMemo(() => {
 **useCallback** - кэшировать функцию
 
 ---
+
+# useContext
+
+**`useCOntext`** - это способ передавать данные в глубину компонентов без props 
+
+
+### Например без него:
+```js
+<App>
+  <Parent>
+    <Child>
+      <DeepChild />  // нужен доступ к данным
+```
+## Как работатет
+
+- Создать Context
+```jsx
+import { createContext } from 'react'
+
+export const ThemeContext = createContext()
+```
+---
+- Обернуть компоненты в Provider
+```jsx
+<ThemeContext.Provider value="dark">
+  <App />
+</ThemeContext.Provider>
+```
+---
+- Получить значение через useContext
+```jsx
+import { useContext } from 'react'
+import { ThemeContext } from './ThemeContext'
+
+const Component = () => {
+  const theme = useContext(ThemeContext)
+
+  return <p>{theme}</p>
+}
+```
+
+ *Простыми словами createContext() создает хранилище, Provider - ложит их туда, useContext() - достает данные* 
