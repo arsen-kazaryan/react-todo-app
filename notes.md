@@ -1,6 +1,5 @@
-# React Notes
-
-------------------------------------------------------------------------
+ч# React Notes
+ *Это заметки которые я сделал для себя и буду их дополнять по мере изучения react* 
 
 ## JSX
 
@@ -554,3 +553,137 @@ const Component = () => {
 ```
 
  *Простыми словами createContext() создает хранилище, Provider - ложит их туда, useContext() - достает данные* 
+
+
+ # Routing
+
+ **`Rounting`** (маршрутизация)- это когда у тебя в React-приложении меняется контент без перезагрузки страницы.
+
+ Пример:
+ - `/` => Главная старница 
+ - `/about` => страница "О нас" 
+ - `*` => Любой путь который не совпал с другим (ставится в конце поскольку будет ловить все path. Если в конце просто все что не совпало с заданными)
+
+ ### Установка 
+  ```jsx
+  npm install react-router
+  ```
+
+## Этапы Работы с Routing
+
+### 1.Оборачиваем приложение
+```jsx
+import { BrowserRouter } from "react-router-dom";
+
+<BrowserRouter>
+  <App />
+</BrowserRouter>
+```
+
+### 2.Создаем маршруты
+```jsx
+import { Routes, Route } from "react-router-dom";
+
+<Routes>
+  <Route path="/" element={<Home />} />
+  <Route path="/about" element={<About />} />
+</Routes>
+```
+### 3. Переходы (вместо \<a>)
+```jsx
+import { Link } from "react-router-dom";
+
+<Link to="/">Home</Link>
+<Link to="/about">About</Link>
+```
+ - использовать \<Link> (именно \<Link> а не \<link>)
+```
+<a> - перезагружает страницу
+<Link> - НЕ перезагружает страницу
+```
+
+## Outlet
+
+**`Outlet`** - это место для отображения вложенных (дочерних) маршрутов
+(Или автоматический отображает компоненты для влоденных маршрутов, он используется в компоненте родителя для указания места где должны рендерится вложенные маршруты. Делается роут в роуте)
+
+Пример:
+```jsx
+<Routes>
+  <Route  path='/auth' element={<AuthPage />} />
+  <Route  path='/auth/login' element={<AuthLoginPage />} />
+  <Route  path='/auth/register' element={<AuthRegPage />} />
+</Routes>
+```
+
+*Это не является вложенностью хоть и указыватся в начале `/auth`. React-router воспринимает этот путь как другой путь просто тут больше букв в пути.*
+
+```jsx
+  <Routes>
+    <Route  path='/auth' element={<AuthPage />}>
+      <Route  path='login' element={<AuthLoginPage />}/>
+      // Можно вместо path сделать index чтобы в родителе сразу начинал рендерится дочерний компонент
+      <Route  path='register' element={<AuthRegPage />}/>
+    <Route>
+  </Routes>
+  
+  {/* А в родительском  роут вставялем outlet*/}
+  
+  const AuthPage =()=>{
+    return(
+      <>
+        <div>
+          <Link to='login'>Login</Link>
+        </div>
+        <Outlet/>
+      </>
+    )
+  }
+```
+*здесь показан пример вложенности где уже не надо указывать через `/` полный путь. Также показано что Outlet должен нахолится внутри родитсельской страницы  чтобы дочерний элементы рендерились. Без него ( Outlet ) будет рендерится только  родитсельская страница без дочерних.*
+
+## Layout
+**`Layout`** - Это просто "Общая обертка" для нескольких страниц.
+* Позволяет один раз создать шапку, меню, футер и другие общие элементы.
+* Избавляет от дублирования кода.
+
+**Простыми словами**
+`Layout` - это "рамка", внутри который меняется только содержимое странцы.
+
+
+### Как создать Layout
+```jsx
+// Layout.tsx
+import { Outlet } from "react-router-dom";
+
+function Layout() {
+  return (
+    <div className="layout">
+      <header>Шапка сайта</header>
+      <nav>Меню навигации</nav>
+      
+      <main>
+        <Outlet />     {/* ← Сюда подставляется страница */}
+      </main>
+      
+      <footer>Футер</footer>
+    </div>
+  );
+}
+
+export default Layout;
+```
+### Подключение
+
+```jsx
+<Routes>
+  <Route path="/" element={<Layout />}>     {/* Главный Layout */}
+    
+    <Route index element={<Home />} />           {/* Главная страница */}
+    <Route path="about" element={<About />} />   {/* /about */}
+    <Route path="contact" element={<Contact />} /> {/* /contact */}
+
+  </Route>
+</Routes>
+```
+
