@@ -804,3 +804,316 @@ export default useCounter
 ```js
 const { count, increment } = useCounter()
 ```
+
+# Redux
+
+**`Redux`** -  это способ хранить и управлять данными приложения в одном общем месте.
+
+**Какую проблему он решает?**
+
+*Он создает одно общее хранилище данных, откуда любой компонент может взять нужные данные и куда можно отправить запрос на изменение данных.*
+
+### Зачем нужен Redux?(Когда уже есть useContext, useState).
+
+* useState хорош для локального состояния 
+* useContext хорош для передачи данных без props drilling
+* но когда приложение становится большим, данных много, логики, много обновлений много - начинается путаница. И все это становится трудно поддерживать
+
+ **Он нужен тогда когда надо:**
+
+ - хранить состояние центализованно 
+ - сделать поведение предсказуемым
+ - удобно отлаживать код
+ - не таскать props через кучу компонентов
+
+
+ #### Важное правило
+ *Нельзя менять state как попало. Изменеие идет по строгой цепочке:*
+```
+component => dispatch(action) => reducer => store обновился => UI перерисовался.
+```
+
+## Основыне части Redux
+
+### Store
+
+**`Store`** - это общее хранилище всего состояния приложения.
+
+Пример:
+```jsx
+{
+  user: { name: 'Arsen', isAuth: true },
+  tasks: ['ReduxStore', 'PracticeReact'],
+  theme: 'gray'
+}
+```
+*Хранит весь ощбий state.*
+
+---
+### State
+**`State`** - это сами данные 
+
+* store - место, где лежат данные
+* state - сами данные внктри store
+
+```js
+{
+  count: 0
+}
+```
+
+---
+### Action 
+**`Action`** - это обычный обеъкт, который описывает, что нужно сделать.
+*Он не меняет state сам*
+
+Он просто говорит:
+- увеличить счетчик
+- удалить задачу
+- добавить товар
+- переключить тему
+
+Пример: 
+```js
+{type: 'addTask', payload:'Buy milk'}
+```
+#### Важные части в action:
+
+**type**
+ Показывает, что за действие 
+
+ **payload**
+ Дополнительные данные 
+
+---
+
+### Dispatch
+**`Dispatch`** - это функция, которая отправляет action Redux.
+
+То есть: 
+* Сначала создается action 
+* потом Отправляется через dispatch
+
+```js
+dispatch({ type: 'addTask', payload: 'Learn Redux' })
+```
+*Он не меняет state напрямую. Он говорит вот действие, обработай его*
+
+---
+
+### Reducer
+**`Reducer`** - это функия, которая получает:
+* текущий State
+* action
+ и возвращает новый state
+
+```jsx
+const counterReducer = (state = 0, action) => {
+  switch (action.type) {
+    case 'increment':
+      return state + 1
+    case 'decrement':
+      return state - 1
+    default:
+      return state
+  }
+}
+```
+* *если action.type === 'increment' -> увеличить на 1*
+* *если action.type === 'decrement' -> уменьшить на 1*
+* *если action  неизвестен -> вернуть state как есть*
+
+**Reducer нельзя менять напрямую**
+
+**Плохо:**
+```js
+state.count = state.count + 1
+return state
+```
+Это плохо потому что: 
+* Мутация 
+* Старый обект изменился 
+* логика становится непредсказуемой 
+
+**Правильно:** 
+```js
+return {
+  ...state,
+  count: state.count + 1
+}
+```
+
+### Полная цепочка работы Redux 
+
+1. Пользователь нажал кнопку
+2. Компонент вызывает dispatch
+```js
+dispatch({ type: 'increment' })
+```
+3. Redux передает action в reducer
+4. Reducer смотрит action.type и решает, как обновить state
+5. Redux сохраняет новый state в store
+6. Компоненты, которые используют эти данные, получают обновление
+7. React перерисовывает интерфейс
+
+
+---
+
+### Slice
+
+**`Slice`** - это состояние + логика для него.
+
+Например:
+- userSlice
+- tasksSlcie
+- cartSlice
+*То есть большое состояние приложения делим на части* 
+```
+{
+  user: {...},
+  tasks: [...],
+  cart: [...]
+}
+```
+*Каждая часть может иметь свой slice.* 
+
+---
+
+#### Простой пример счетчика через Redux Toolkit: 
+```jsx
+import { createSlice } from '@reduxjs/toolkit'
+
+const counterSlice = createSlice({
+  name: 'counter',
+  initialState: {
+    value: 0
+  },
+  reducers: {
+    increment: (state) => {
+      state.value += 1
+    },
+    decrement: (state) => {
+      state.value -= 1
+    },
+    incrementByAmount: (state, action) => {
+      state.value += action.payload
+    }
+  }
+})
+
+export const { increment, decrement, incrementByAmount } = counterSlice.actions
+export default counterSlice.reducer
+```
+
+**Место где можно запутатся**
+```js
+state.value += 1
+```
+Вообще state менять напрямую нельзя.Однако в этом сдучае можно поскольку в Redux Toolkit используется библиотека Immer. 
+
+Она повзволяет писать код будто state мутируется, но на самом деле под капотом он создает новы йбезопасный state.
+```js
+state.value +=1
+```
+То есть в RTK это нормально 
+
+*Но только внутри createSlice и reducer'ов RTK.*
+
+---
+
+#### CreateSlice
+**`createSlice`**  сразу делает несколько вещей:
+
+- Создает reducers
+- Создает actions автоматический
+*Вручную не надо писать*
+```
+{type : 'counter/increment'}
+```
+- Возвращает reducer
+
+---
+
+### useSelector 
+**`useSelector`** способо получить данные из Redux В компоненте(Берет дааные из store).
+
+```jsx
+import { useSelector } from 'react-redux'
+
+const Counter = () => {
+  const count = useSelector((state) => state.counter.value)
+
+  return <h1>{count}</h1>
+}
+```
+* state - Это весь store
+* state.counter - slice counter
+* state.counter.value - Значение счетчика
+
+---
+
+### useDispatch 
+**`useDispatch`** способ поменять данные из компонента
+
+Пример:
+```jsx
+import { useDispatch } from 'react-redux'
+import { increment } from './counterSlice'
+
+const CounterButtons = () => {
+  const dispatch = useDispatch()
+
+  return (
+    <button onClick={() => dispatch(increment())}>
+      +
+    </button>
+  )
+}
+```
+* useDispatch() Дает функцию dispatch
+* increment() - action creator (это функция которая возвращает action)
+* dispatch(increment()) отправляет action в reducer
+
+---
+
+## Асинхронность в Redux
+
+Redcuer должен быть чистой функцией.
+
+Значит в reducer нельзя :
+* fetch
+* setTimeOut
+* Запросы на сервер
+
+### createAsynchThunk
+**`createAsynchThunk`** - помогает делать запросы к серверу.
+
+#### Зачем он нужен? 
+ *Потому что reducer не должен заниматся запросами. Для этого нужна отдлеьная логика.*
+
+  * Началась загрузка
+  * Загрузка успешна
+  * загрузка завершилоась ошибкой
+Это обычно хранится так 
+```js
+{
+  data:[],
+  loading:false,
+  error:null
+}
+```
+**Пример состояния загрузки**
+
+Когда запрос начался:
+* loading = true
+
+Когда успех:
+* loading = false
+* users = данные 
+
+Когда ошибка:
+* loading = false
+* error = текст ошибки
+
+Простыми словами
+*Redux — это общий менеджер состояния приложения, который заставляет изменять данные по четким правилам.*
