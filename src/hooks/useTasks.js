@@ -43,22 +43,19 @@ const useTasks =()=>{
   }, [tasks])
 
 
-  const addTask = useCallback(() => {
-    {/*Добавляет задачи, но перед этим проверяет не пустая ли стока и дает уникальный id одним из способой  */ }
-    if (newTaskTitle.trim().length > 0) {
-      const newTask = {
-        id: crypto?.randomUUID() ?? Date.now().toString(),
-        title: newTaskTitle,
-        isDone: false
-      }
-
-      setTasks((prev) => [...prev, newTask])
-      setNewTaskTitle('')
-      setSearchQuery('')
-      newTaskInputRef.current.focus()
-      {/*Очищает поле после добавления задачи */ }
+  const addTask = useCallback((title) => {
+  {/*Добавляет задачи, но перед этим проверяет не пустая ли стока и дает уникальный id одним из способой  */ }
+    const newTask = {
+      id: crypto?.randomUUID() ?? Date.now().toString(),
+      title,
+      isDone: false
     }
-  }, [newTaskTitle])
+    setTasks((prev) => [...prev, newTask])
+    setNewTaskTitle('')
+    setSearchQuery('')
+    newTaskInputRef.current.focus()
+    {/*Очищает поле после добавления задачи */ }
+  }, [])
   useEffect(() => {
     saveTasks(tasks)
   }, [tasks])

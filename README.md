@@ -1,4 +1,4 @@
-# Todo App (React + Custom Hooks)
+  # Todo App (React + Custom Hooks)
 
 Более продвинутое приложение списка задач, созданное для практики React и архитектуры с кастомными хуками.
 
