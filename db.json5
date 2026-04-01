@@ -1,0 +1,1 @@
+{tasks:[{id:'tasks-1',title:'Купить молоко',isDone:true},{id:'tasks-2',title:'Выучть React',isDone:false},{id:'tasks-3',title:'Разобратся с Redux',isDone:false}],$schema:'./node_modules/json-server/schema.json'}

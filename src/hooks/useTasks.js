@@ -1,16 +1,10 @@
 import { useCallback, useState, useEffect, useMemo, useRef } from "react"
-import useTasksLocalStorage from "./useTasksLocalStorage"
+import tasksAPI from "../api/tasksAPI"
 
 const useTasks =()=>{
-  const  {
-    savedTasks,
-    saveTasks,
-  }=useTasksLocalStorage()
+
   
-  const [tasks, setTasks] = useState(() => savedTasks ?? [
-      { id: 'tasks-1', title: 'Купить молоко', isDone: false },
-      { id: 'tasks-2', title: 'Выучть React', isDone: true },
-    ])
+  const [tasks, setTasks] = useState([])
   const [newTaskTitle, setNewTaskTitle] = useState('')
   const [searchQuery, setSearchQuery] = useState('')
 
@@ -21,18 +15,27 @@ const useTasks =()=>{
     const isConfirmed = confirm('Are you shure you want to delete all?')
 
     if (isConfirmed) {
-      setTasks([])
+
+tasksAPI.deleteAll(tasks)
+  .then(()=> setTasks([]))
     }
-  }, [])
+  }, [tasks])
 
   const deleteTask = useCallback((taskId) => {
-    setTasks(
-      tasks.filter((task => task.id !== taskId))
+
+
+  tasksAPI.delete(taskId)
+    .then(() => {
+      setTasks(
+        tasks.filter((task => task.id !== taskId))
     )
+    })
   }, [tasks])
 
   const toggleTaskComplete = useCallback((taskId, isDone) => {
-    setTasks(
+    tasksAPI.toggleCompete(taskId,isDone)
+    .then(()=> {
+          setTasks(
       tasks.map((task) => {
         if (task.id === taskId) {
           return { ...task, isDone }
@@ -40,29 +43,36 @@ const useTasks =()=>{
         return task
       })
     )
+    })
   }, [tasks])
 
 
   const addTask = useCallback((title) => {
   {/*Добавляет задачи, но перед этим проверяет не пустая ли стока и дает уникальный id одним из способой  */ }
     const newTask = {
-      id: crypto?.randomUUID() ?? Date.now().toString(),
       title,
       isDone: false
     }
-    setTasks((prev) => [...prev, newTask])
+
+tasksAPI.add(newTask)
+    .then((data)=> {
+    setTasks((prev) =>   [...prev, data])
     setNewTaskTitle('')
     setSearchQuery('')
     newTaskInputRef.current.focus()
+    })
+
+
+
     {/*Очищает поле после добавления задачи */ }
   }, [])
-  useEffect(() => {
-    saveTasks(tasks)
-  }, [tasks])
+
 
   useEffect(() => {
     newTaskInputRef.current.focus()
     // Этот useEffect отвечает за фокусировку на поле ввода после загрузки. 
+
+    tasksAPI.getAll().then(setTasks)
   }, [])
 
   const filteredTasks = useMemo(() => {
