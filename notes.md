@@ -1,5 +1,42 @@
 # React Notes
- *Это заметки которые я сделал для себя и буду их дополнять по мере изучения react* 
+ *Это мой учебный конспект по React и смежным темам. Который я буду дополнять по мере изучения React*
+
+
+## Что есть в этом файле
+
+### 1. Основы React
+- [JSX](#jsx) — корневой элемент, фигурные скобки, комментарии, самозакрывающиеся теги, атрибуты, `style`
+- [Условный рендеринг](#условный-рендеринг) — `&&`, тернарный оператор, `if`
+- [Списки и метод `map`](#списки-и-метод-map)
+- [Export](#export) — `named export` и `default export`
+- [Компоненты](#компоненты)
+- [Props](#props)
+- [Children](#children)
+- [События в React](#события-в-react)
+
+### 2. Хуки
+- [useState](#usestate)
+- [useEffect](#useeffect)
+- [useRef](#useref)
+- [Кастомные хуки](#кастомные-хуки)
+
+### 3. Оптимизация
+- [memo / useCallback / useMemo](#memo-мемоизация)
+
+### 4. Контекст и маршрутизация
+- [useContext](#usecontext)
+- [Routing](#routing)
+- [useNavigate](#usenavigate)
+- [useParams](#useparams)
+
+### 5. Архитектура состояния и работа с сервером
+- [Redux](#redux)
+- [REST API](#rest-api)
+
+
+
+
+
 
 ## JSX
 
