@@ -33,6 +33,8 @@
 - [Redux](#redux)
 - [REST API](#rest-api)
 
+### 6. Библиотеки 
+- [ReactHookForm](#react-hook-form-библиотека)
 
 
 
@@ -1379,4 +1381,131 @@ const deleteUser = () => {
 Пример кнопки:
 ```jsx
 <button onClick={deleteUser}>Delete user</button>
+```
+
+
+
+# React Hook Form (Библиотека)
+ 
+ **`React Hook Form`** - это библиотека для работы с формами в React: поля ввода, отправка формы, валидация, ошибки, reset, значения по умолчанию и так далее. Главная идея библиотеки - не хранить каждое поле через отдельный useState, а управлять формой через хук useForm() и регистрацию полей через register.
+
+ *библиотека даёт useForm, register, handleSubmit, formState, reset, watch и другие инструменты, чтобы форма была короче и чище*
+
+### useForm()
+  useForm() - главный зук библиотеки, из него можно получить инструменты:
+
+  - register - подключает input к форме
+  - handleSubmit - правильно обрабатывает отправку формы
+  - formState.errors - хранит ошибки
+  - reset - очищает форму
+
+
+```jsx
+  {/* Установка npm i react-hook-form */}
+    import { useForm } from 'react-hook-form'
+
+  function MyForm() {
+    const {
+      register,
+      handleSubmit,
+      formState: { errors },
+    } = useForm()
+
+    const onSubmit = (data) => {
+      console.log(data)
+
+    }
+
+    return (
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <input {...register('username')} placeholder="Введите имя" />
+        <button type="submit">Отправить</button>
+      </form>
+    )
+  }
+
+  export default MyForm
+
+```
+## Разбор кода
+1. **Вызов useForm()**
+```
+const {
+  register,
+  handleSubmit,
+  formState: { errors },
+} = useForm()
+```
+  register - подключение к форме
+  HandleSubmit - обработка input
+  errors - хранит ошибки 
+
+2. **Функция отправки** 
+
+```jsx
+const onSubmit = (data) => {
+  console.log(data)
+}
+```
+
+Когда форма отправится успешно, сюда придут все данные формы.
+
+3. **HandleSubmit  подключение**
+
+```jsx
+  <form onSubmit={handleSubmit(onSubmit)}>
+  
+  {/*Вот так не надо*/}
+  <form onSubmit={onSubmit}>
+```
+HadleSubmit - собирает все данные со всех полей, проверяет валидацию, только потом вызывает onSubmit
+
+4.  **Подключение поля через register**
+
+  ```jsx
+    <input {...register('username')} placeholder="Введите имя" />
+  ```
+
+  Простыми словами register Говорит - "Вот это поле теперь часть формы. Его имя - username."
+
+**Почему именно ...register()?** 
+- Это spread syntax. Пока не нужно запоминать внутренности. Просто правил - при подключении input к react-hook-form писать `...regsiter('ИМЯ ПОЛЯ')`
+
+
+## Базовая валидация
+
+```jsx
+  <input {...register('name', { required: 'Введите имя' })} />
+```
+* { required: 'Введите имя' } — правило валидации если поле будет пустое появится ошибка
+
+
+### Pattern 
+
+pattern -  это проверка по регулярному выражению
+
+```jsx
+<input
+  {...register('name', {
+    pattern: {
+      value: /^[A-Za-zА-Яа-яЁё]+$/,
+      message: 'Только буквы',
+    },
+  })}
+/>
+```
+
+### MinLength|MaxLength
+
+Указывает минимальную или максимальную длину
+
+```jsx
+<input
+  {...register('password', {
+    minLength: {
+      value: 6,
+      message: 'Минимум 6 символов',
+    },
+  })}
+/>
 ```
