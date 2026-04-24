@@ -35,6 +35,7 @@
 
 ### 6. Библиотеки 
 - [ReactHookForm](#react-hook-form-библиотека)
+- [ReactHelmentAsync](#reac-helmet-async)
 
 ### 7. Git Команды
 - [GitComands](#git-команды)
@@ -1600,6 +1601,76 @@ const user = useStore(
 *  селектор создаёт объект;
 * Zustand сравнивает новый и старый результат через shallow;
 * если top-level значения те же, компонент не ререндерится лишний раз.
+
+# React-helmet-async
+
+**`React-helmet-asycn`** - Это библиотека для управления тегами внутри HTML <head> из React-компонентов.
+
+
+Позволяет менять :
+```jsx
+  <title></title>
+  <meta name="description">
+  <meta name="keywords">
+  <link rel="canonical">
+  <meta property="og:title">
+  <meta property="og:image">
+```
+*Простыми словами нужен чтобы при переключении страниц менялся title.* 
+
+#### Установка
+```jsx
+npm i react-helmet-async
+```
+
+**Надо запомнить что ему нужен провайдер.**
+```
+  <HelmetProvider>
+```
+
+### Использование 
+```jsx
+import { Helmet } from 'react-helmet-async'
+
+const ProjectsPage = () => {
+  return (
+    <>
+      <Helmet>
+        <title>Projects | TaskFlow</title>
+        <meta
+          name="description"
+          content="Create and manage your projects in TaskFlow."
+        />
+      </Helmet>
+
+      <h1>Projects</h1>
+    </>
+  )
+}
+
+export default ProjectsPage
+```
+
+### SEO 
+Чтобы не создавать для каждого компонента длинный <Helmet>. Лучше создатькомпонент SEO.
+```jsx
+import { Helmet } from 'react-helmet-async'
+
+const SEO = ({ title, description }) => {
+  return (
+    <Helmet>
+      <title>{title}</title>
+      <meta name="description" content={description} />
+    </Helmet>
+  )
+}
+
+export default SEO
+```
+
+
+
+
 
 
 # Git команды
