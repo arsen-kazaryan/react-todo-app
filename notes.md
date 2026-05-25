@@ -36,9 +36,12 @@
 ### 6. Библиотеки 
 - [ReactHookForm](#react-hook-form-библиотека)
 - [ReactHelmentAsync](#reac-helmet-async)
+- [Добавить Zustand]( )
 
-### 7. Git Команды
+### 7. Git 
 - [GitComands](#git-команды)
+- [GitCommits](#git-коммиты)
+
 
 
 
@@ -1717,3 +1720,36 @@ export default SEO
 | `git diff --staged`           | Показать изменения, уже добавленные в индекс         |
 | `git reset <файл>`            | Убрать файл из индекса                               |
 | `git restore <файл>`          | Отменить изменения в файле                           |
+
+
+
+
+
+
+# Git-Коммиты 
+
+**Рекомендованный стиль написания коммитов** 
+
+## fix - исправление бага
+    Пример: fix: correct job filtering logic
+
+## feat - добавление новых функций 
+    Пример: feat: add user profile page
+
+## style - изменения только во внешнем виде или форматировании
+    Пример: style: update delete button styles
+
+## refactor - переработка кода без новой функциональности и без фикса бага
+    Пример: refactor: move jobs state to App
+
+## docs - изменения в документации
+    Пример: docs: update README
+
+## test - добавление или изменение тестов
+    Пример: test: add job card tests
+
+## chore - технические мелочи, обслуживание проекта
+    Пример: chore: update dependencies
+
+## perf - улучшение производительности
+    Пример: perf: optimize jobs filtering // Доделать

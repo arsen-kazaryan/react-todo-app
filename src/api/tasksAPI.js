@@ -6,7 +6,12 @@ const headers ={
 }
 const tasksAPI ={
   getAll: ()=>{
-    return fetch(URL).then((res)=> res.json() )
+    return fetch(URL).then((res)=> res.json())
+  },
+
+  getByIs: (id)=> {
+    return fetch(`${URL}/${id}`)
+    .then((res)=> res.json())
   },
 
   add: (task)=>{
